@@ -14,8 +14,8 @@ public class MedicalPlanController {
     }
 
     @GetMapping("/v1/plan/{objectId}")
-    public void getMedicalPlanDetails(@PathVariable String objectId){
-
+    public String getMedicalPlanDetails(@PathVariable String objectId){
+        return objectId;
     }
 
     @DeleteMapping("/v1/plan/{objectId}")

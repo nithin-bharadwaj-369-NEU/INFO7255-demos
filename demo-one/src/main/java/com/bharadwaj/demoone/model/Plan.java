@@ -7,11 +7,12 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
 @RedisHash("Plan")
-public class Plan {
+public class Plan implements Serializable {
     @Valid
     public PlanCostShares planCostShares;
     @Valid

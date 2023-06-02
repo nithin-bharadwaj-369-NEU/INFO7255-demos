@@ -3,7 +3,9 @@ package com.bharadwaj.demoone.model;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.data.annotation.Id;
 
-public class LinkedService {
+import java.io.Serializable;
+
+public class LinkedService implements Serializable {
     @NotBlank(message = "Organization is mandatory")
     public String _org;
     @NotBlank(message = "Object ID is mandatory")

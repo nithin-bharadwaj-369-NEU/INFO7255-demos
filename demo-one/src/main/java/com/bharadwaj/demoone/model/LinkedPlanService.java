@@ -4,7 +4,9 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.data.annotation.Id;
 
-public class LinkedPlanService {
+import java.io.Serializable;
+
+public class LinkedPlanService implements Serializable {
     @Valid
     public LinkedService linkedService;
     @Valid
