@@ -2,6 +2,7 @@ package com.bharadwaj.demoone.controller;
 
 import com.bharadwaj.demoone.model.Plan;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -9,17 +10,17 @@ import org.springframework.web.bind.annotation.*;
 public class MedicalPlanController {
 
     @PostMapping("/v1/plan")
-    public void addMedicalPlan(){
-
+    public ResponseEntity<Plan> addMedicalPlan(){
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/v1/plan/{objectId}")
-    public String getMedicalPlanDetails(@PathVariable String objectId){
-        return objectId;
+    public ResponseEntity<Plan> getMedicalPlanDetails(@PathVariable String objectId){
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/v1/plan/{objectId}")
-    public void deleteMedicalPlan(@PathVariable String objectId){
-        
+    public ResponseEntity<Plan> deleteMedicalPlan(@PathVariable String objectId){
+        return ResponseEntity.ok().build();
     }
 }
