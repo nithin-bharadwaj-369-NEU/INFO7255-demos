@@ -21,13 +21,14 @@ public class MedicalPlanController {
         return medicalPlanService.savePlan(p);
     }
 
-    @GetMapping
+    @GetMapping("{objectId}")
     public ResponseEntity<Plan> getMedicalPlanDetails(@PathVariable String objectId){
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping
+    @DeleteMapping("{objectId}")
     public ResponseEntity<Plan> deleteMedicalPlan(@PathVariable String objectId){
+        log.info("Object passed to delete Medical Plan : " + objectId);
         return ResponseEntity.ok().build();
     }
 }
