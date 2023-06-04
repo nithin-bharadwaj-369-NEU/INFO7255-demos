@@ -3,15 +3,22 @@ package com.bharadwaj.demoone.model;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PastOrPresent;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @RedisHash("Plan")
-public class Plan {
+public class Plan implements Serializable {
     @Valid
     public PlanCostShares planCostShares;
     @Valid
