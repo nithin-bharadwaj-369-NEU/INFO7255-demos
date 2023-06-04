@@ -2,10 +2,12 @@ package com.bharadwaj.demoone.model;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import lombok.Data;
 import org.springframework.data.annotation.Id;
 
 import java.io.Serializable;
 
+@Data
 public class LinkedPlanService implements Serializable {
     @Valid
     public LinkedService linkedService;
