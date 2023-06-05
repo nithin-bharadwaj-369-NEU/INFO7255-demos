@@ -2,6 +2,7 @@ package com.bharadwaj.demoone.model;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -34,7 +35,7 @@ public class Plan implements Serializable {
     @NotBlank(message = "Plan type is mandatory")
     public String planType;
 
-    @NotBlank(message = "Creation date is mandatory")
+    @NotNull(message = "Creation date is mandatory")
     @DateTimeFormat(pattern = "MM-dd-yyyy") // update this if your date format is different
     @PastOrPresent(message = "Creation date must be in the past or present")
     public Date creationDate;

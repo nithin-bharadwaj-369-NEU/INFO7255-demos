@@ -8,4 +8,6 @@ public interface MedicalPlanRepository {
     boolean savePlan(Plan p);
 
     List<Plan> fetchAllPlans();
+
+    Plan getPlanById(String objectId);
 }

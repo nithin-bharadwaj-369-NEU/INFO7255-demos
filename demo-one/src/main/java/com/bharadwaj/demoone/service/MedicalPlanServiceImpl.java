@@ -26,4 +26,9 @@ public class MedicalPlanServiceImpl implements MedicalPlanService{
     public List<Plan> fetchAllPlans() {
         return medicalPlanRepository.fetchAllPlans();
     }
+
+    @Override
+    public Plan getMedicalPlanById(String objectId) {
+        return medicalPlanRepository.getPlanById(objectId);
+    }
 }

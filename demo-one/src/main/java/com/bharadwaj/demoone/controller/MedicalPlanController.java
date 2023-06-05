@@ -40,6 +40,13 @@ public class MedicalPlanController {
         return ResponseEntity.ok(plans);
     }
 
+    @GetMapping("{objectId}")
+    public ResponseEntity<Plan> getMedicalPlan(@PathVariable String objectId){
+        Plan p;
+        p = medicalPlanService.getMedicalPlanById(objectId);
+        return ResponseEntity.ok(p);
+    }
+
     @DeleteMapping("{objectId}")
     public ResponseEntity<Plan> deleteMedicalPlan(@PathVariable String objectId){
         log.info("Object passed to delete Medical Plan : " + objectId);

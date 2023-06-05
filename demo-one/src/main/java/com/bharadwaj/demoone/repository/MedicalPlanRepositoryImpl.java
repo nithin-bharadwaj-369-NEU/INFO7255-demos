@@ -34,4 +34,11 @@ public class MedicalPlanRepositoryImpl implements MedicalPlanRepository{
         plans = redisTemplate.opsForHash().values(KEY);
         return plans;
     }
+
+    @Override
+    public Plan getPlanById(String objectId) {
+        Plan medicalPlan;
+        medicalPlan = (Plan)redisTemplate.opsForHash().get(KEY, objectId.toString());
+        return medicalPlan;
+    }
 }
