@@ -17,7 +17,7 @@ public class MedicalPlanRepository {
         log.info("Plan sent to save : " + p.toString());
         // update the keys to the medical Plan
         list.add(medicalPlan);
-        return medicalPlan;
+        return p;
     }
 
     public int delete(String id) {

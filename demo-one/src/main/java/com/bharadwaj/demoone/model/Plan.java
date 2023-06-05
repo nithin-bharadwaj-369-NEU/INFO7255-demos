@@ -35,7 +35,7 @@ public class Plan implements Serializable {
     public String planType;
 
     @NotBlank(message = "Creation date is mandatory")
-    @DateTimeFormat(pattern = "dd-MM-yyyy") // update this if your date format is different
+    @DateTimeFormat(pattern = "MM-dd-yyyy") // update this if your date format is different
     @PastOrPresent(message = "Creation date must be in the past or present")
     public Date creationDate;
 }

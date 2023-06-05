@@ -17,6 +17,7 @@ public class MedicalPlanController {
 
     @PostMapping
     public Plan addMedicalPlan(@RequestBody Plan p){
+        log.info("Plan passed to POST : ", p );
 //        return ResponseEntity.ok().build();
         return medicalPlanService.savePlan(p);
     }
