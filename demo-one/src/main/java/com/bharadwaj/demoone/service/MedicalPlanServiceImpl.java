@@ -2,12 +2,12 @@ package com.bharadwaj.demoone.service;
 
 import com.bharadwaj.demoone.model.Plan;
 import com.bharadwaj.demoone.repository.MedicalPlanRepository;
-import com.bharadwaj.demoone.repository.MedicalPlanRepositoryImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -28,12 +28,12 @@ public class MedicalPlanServiceImpl implements MedicalPlanService{
     }
 
     @Override
-    public Plan getMedicalPlanById(String objectId) {
+    public Optional<Plan> getMedicalPlanById(String objectId) {
         return medicalPlanRepository.getPlanById(objectId);
     }
 
     @Override
-    public boolean deletePlan(String objectId) {
+    public Optional<Boolean> deletePlan(String objectId) {
         return medicalPlanRepository.deletePlan(objectId);
     }
 }

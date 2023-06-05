@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @Slf4j
@@ -41,19 +42,26 @@ public class MedicalPlanController {
 
     @GetMapping("{objectId}")
     public ResponseEntity<Plan> getMedicalPlan(@PathVariable String objectId){
-        Plan p;
-        p = medicalPlanService.getMedicalPlanById(objectId);
-        return ResponseEntity.ok(p);
+        Optional<Plan> plan = medicalPlanService.getMedicalPlanById(objectId);
+        if(plan.isPresent()){
+            return ResponseEntity.ok(plan.get());
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
     @DeleteMapping("{objectId}")
     public ResponseEntity<String> deleteMedicalPlan(@PathVariable String objectId){
         log.info("Object passed to delete Medical Plan : " + objectId);
-        boolean result = medicalPlanService.deletePlan(objectId);
-        if(result){
-            return ResponseEntity.ok("Deleted Plan Successfully");
+        Optional<Boolean> result = medicalPlanService.deletePlan(objectId);
+        if(result.isPresent()){
+            if(result.get()){
+                return ResponseEntity.ok("Deleted Plan Successfully");
+            }else{
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            }
         }else{
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 }

@@ -6,15 +6,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Repository
 public class MedicalPlanRepositoryImpl implements MedicalPlanRepository{
 
+    private final RedisTemplate redisTemplate;
     @Autowired
-    private RedisTemplate redisTemplate;
+    public MedicalPlanRepositoryImpl(RedisTemplate redisTemplate) {
+        this.redisTemplate = redisTemplate;
+    }
 
     private static final String KEY="MEDICAL_PLAN";
     @Override
@@ -23,7 +26,7 @@ public class MedicalPlanRepositoryImpl implements MedicalPlanRepository{
             redisTemplate.opsForHash().put(KEY, p.getObjectId().toString(), p);
             return true;
         }catch(Exception e){
-            e.printStackTrace();
+            log.error("Error Saving plan : ", e);
             return false;
         }
     }
@@ -36,20 +39,24 @@ public class MedicalPlanRepositoryImpl implements MedicalPlanRepository{
     }
 
     @Override
-    public Plan getPlanById(String objectId) {
+    public Optional<Plan> getPlanById(String objectId) {
         Plan medicalPlan;
         medicalPlan = (Plan) redisTemplate.opsForHash().get(KEY, objectId.toString());
-        return medicalPlan;
+        return Optional.ofNullable(medicalPlan);
     }
 
     @Override
-    public boolean deletePlan(String objectId) {
+    public Optional<Boolean>  deletePlan(String objectId) {
         try{
-            redisTemplate.opsForHash().delete(KEY, objectId.toString());
-            return true;
+            if(redisTemplate.opsForHash().hasKey(KEY, objectId.toString())){
+                redisTemplate.opsForHash().delete(KEY, objectId.toString());
+                return Optional.of(true);
+            }else {
+                return Optional.empty();
+            }
         }catch(Exception e){
-            e.printStackTrace();
-            return false;
+            log.error("Error deleting plan", e);
+            return Optional.of(false);
         }
     }
 }
