@@ -1,7 +1,7 @@
 package com.bharadwaj.demoone.controller;
 
 import com.bharadwaj.demoone.model.Plan;
-import com.bharadwaj.demoone.service.MedicalPlanService;
+import com.bharadwaj.demoone.service.MedicalPlanServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 public class MedicalPlanController {
 
     @Autowired
-    private MedicalPlanService medicalPlanService;
+    private MedicalPlanServiceImpl medicalPlanService;
 
     @PostMapping
     public Plan addMedicalPlan(@RequestBody Plan p){
