@@ -40,7 +40,7 @@ public class MedicalPlanController {
         return ResponseEntity.ok(plans);
     }
 
-    @GetMapping("{objectId}")
+    @GetMapping("/{objectId}")
     public ResponseEntity<Plan> getMedicalPlan(@PathVariable String objectId){
         Optional<Plan> plan = medicalPlanService.getMedicalPlanById(objectId);
         if(plan.isPresent()){
@@ -50,7 +50,7 @@ public class MedicalPlanController {
         }
     }
 
-    @DeleteMapping("{objectId}")
+    @DeleteMapping("/{objectId}")
     public ResponseEntity<String> deleteMedicalPlan(@PathVariable String objectId){
         log.info("Object passed to delete Medical Plan : " + objectId);
         Optional<Boolean> result = medicalPlanService.deletePlan(objectId);
