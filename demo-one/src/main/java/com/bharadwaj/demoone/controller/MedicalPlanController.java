@@ -1,11 +1,16 @@
 package com.bharadwaj.demoone.controller;
 
 import com.bharadwaj.demoone.model.Plan;
+import com.bharadwaj.demoone.service.MedicalPlanService;
 import com.bharadwaj.demoone.service.MedicalPlanServiceImpl;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @Slf4j
@@ -13,18 +18,26 @@ import org.springframework.web.bind.annotation.*;
 public class MedicalPlanController {
 
     @Autowired
-    private MedicalPlanServiceImpl medicalPlanService;
+    private MedicalPlanService medicalPlanService;
 
     @PostMapping
-    public Plan addMedicalPlan(@RequestBody Plan p){
+    public ResponseEntity<Plan> saveMedicalPlan(@Valid @RequestBody Plan p){
         log.info("Plan passed to POST : ", p );
-//        return ResponseEntity.ok().build();
-        return medicalPlanService.savePlan(p);
+        boolean result = medicalPlanService.savePlan(p);
+        if(result){
+            ResponseEntity.ok("Medical Plan added to the DB Successfully !! ");
+        }else{
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+        return null;
     }
 
-    @GetMapping("{objectId}")
-    public ResponseEntity<Plan> getMedicalPlanDetails(@PathVariable String objectId){
-        return ResponseEntity.ok().build();
+
+    @GetMapping
+    public ResponseEntity<List<Plan>> fetchAllPlans(){
+        List<Plan> plans;
+        plans = medicalPlanService.fetchAllPlans();
+        return ResponseEntity.ok(plans);
     }
 
     @DeleteMapping("{objectId}")

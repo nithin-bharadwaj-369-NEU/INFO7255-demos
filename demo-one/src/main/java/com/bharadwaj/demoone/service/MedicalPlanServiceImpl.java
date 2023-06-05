@@ -1,32 +1,29 @@
 package com.bharadwaj.demoone.service;
 
 import com.bharadwaj.demoone.model.Plan;
+import com.bharadwaj.demoone.repository.MedicalPlanRepository;
 import com.bharadwaj.demoone.repository.MedicalPlanRepositoryImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Slf4j
 @Service
-public class MedicalPlanServiceImpl {
+public class MedicalPlanServiceImpl implements MedicalPlanService{
 
     @Autowired
-    private MedicalPlanRepositoryImpl medicalPlanRepositoryIml;
+    private MedicalPlanRepository medicalPlanRepository;
 
-    public Plan savePlan(Plan p) {
-        return medicalPlanRepositoryIml.save(p);
+
+    @Override
+    public boolean savePlan(Plan p) {
+        return medicalPlanRepository.savePlan(p);
     }
 
-//    public List<Plan> getProducts() {
-//        return medicalPlanRepository.getAllPlans();
-//    }
-//
-//    public Plan getProductById(int id) {
-//        return medicalPlanRepository.(id);
-//    }
-
-    public String deleteProduct(String id) {
-        medicalPlanRepositoryIml.delete(id);
-        return "product removed !! " + id;
+    @Override
+    public List<Plan> fetchAllPlans() {
+        return medicalPlanRepository.fetchAllPlans();
     }
 }

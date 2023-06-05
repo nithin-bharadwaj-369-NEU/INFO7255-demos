@@ -2,6 +2,8 @@ package com.bharadwaj.demoone.repository;
 
 import com.bharadwaj.demoone.model.Plan;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -9,24 +11,27 @@ import java.util.List;
 
 @Slf4j
 @Repository
-public class MedicalPlanRepositoryImpl {
-    private List<Plan> list = new ArrayList<Plan>();
+public class MedicalPlanRepositoryImpl implements MedicalPlanRepository{
 
-    public Plan save(Plan p) {
-        Plan medicalPlan = new Plan();
-        log.info("Plan sent to save : " + p.toString());
-        // update the keys to the medical Plan
-        list.add(medicalPlan);
-        return p;
+    @Autowired
+    private RedisTemplate redisTemplate;
+
+    private static final String KEY="MEDICAL_PLAN";
+    @Override
+    public boolean savePlan(Plan p) {
+        try{
+            redisTemplate.opsForHash().put(KEY, p.getObjectId().toString(), p);
+            return true;
+        }catch(Exception e){
+            e.printStackTrace();
+            return false;
+        }
     }
 
-    public int delete(String id) {
-        list.removeIf(x -> x.getObjectId() == (id));
-        return 1;
+    @Override
+    public List<Plan> fetchAllPlans() {
+        List<Plan> plans;
+        plans = redisTemplate.opsForHash().values(KEY);
+        return plans;
     }
-
-//    public List<Plan> getAllPlans(){
-//
-//    }
-
 }
