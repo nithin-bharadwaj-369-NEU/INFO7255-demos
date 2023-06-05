@@ -2,7 +2,6 @@ package com.bharadwaj.demoone.controller;
 
 import com.bharadwaj.demoone.model.Plan;
 import com.bharadwaj.demoone.service.MedicalPlanService;
-import com.bharadwaj.demoone.service.MedicalPlanServiceImpl;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,8 +47,13 @@ public class MedicalPlanController {
     }
 
     @DeleteMapping("{objectId}")
-    public ResponseEntity<Plan> deleteMedicalPlan(@PathVariable String objectId){
+    public ResponseEntity<String> deleteMedicalPlan(@PathVariable String objectId){
         log.info("Object passed to delete Medical Plan : " + objectId);
-        return ResponseEntity.ok().build();
+        boolean result = medicalPlanService.deletePlan(objectId);
+        if(result){
+            return ResponseEntity.ok("Deleted Plan Successfully");
+        }else{
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 }

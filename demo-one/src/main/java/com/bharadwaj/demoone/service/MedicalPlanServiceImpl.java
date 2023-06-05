@@ -31,4 +31,9 @@ public class MedicalPlanServiceImpl implements MedicalPlanService{
     public Plan getMedicalPlanById(String objectId) {
         return medicalPlanRepository.getPlanById(objectId);
     }
+
+    @Override
+    public boolean deletePlan(String objectId) {
+        return medicalPlanRepository.deletePlan(objectId);
+    }
 }

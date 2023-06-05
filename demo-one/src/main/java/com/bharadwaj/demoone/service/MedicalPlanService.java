@@ -10,4 +10,6 @@ public interface MedicalPlanService {
     List<Plan> fetchAllPlans();
 
     Plan getMedicalPlanById(String objectId);
+
+    boolean deletePlan(String objectId);
 }

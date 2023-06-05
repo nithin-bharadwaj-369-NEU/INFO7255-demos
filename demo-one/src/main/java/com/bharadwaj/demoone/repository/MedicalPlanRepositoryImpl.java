@@ -38,7 +38,18 @@ public class MedicalPlanRepositoryImpl implements MedicalPlanRepository{
     @Override
     public Plan getPlanById(String objectId) {
         Plan medicalPlan;
-        medicalPlan = (Plan)redisTemplate.opsForHash().get(KEY, objectId.toString());
+        medicalPlan = (Plan) redisTemplate.opsForHash().get(KEY, objectId.toString());
         return medicalPlan;
+    }
+
+    @Override
+    public boolean deletePlan(String objectId) {
+        try{
+            redisTemplate.opsForHash().delete(KEY, objectId.toString());
+            return true;
+        }catch(Exception e){
+            e.printStackTrace();
+            return false;
+        }
     }
 }
