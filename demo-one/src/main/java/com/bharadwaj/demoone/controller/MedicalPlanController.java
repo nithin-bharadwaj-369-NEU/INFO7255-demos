@@ -56,12 +56,12 @@ public class MedicalPlanController {
         Optional<Boolean> result = medicalPlanService.deletePlan(objectId);
         if(result.isPresent()){
             if(result.get()){
-                return ResponseEntity.ok("Deleted Plan Successfully");
+                return ResponseEntity.noContent().build();
             }else{
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             }
         }else{
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(String.format("Plan with Object ID : %s Not found", objectId));
         }
     }
 }
