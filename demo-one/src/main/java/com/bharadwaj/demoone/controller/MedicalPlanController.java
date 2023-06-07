@@ -1,5 +1,6 @@
 package com.bharadwaj.demoone.controller;
 
+import com.bharadwaj.demoone.dto.PlanResponse;
 import com.bharadwaj.demoone.model.Plan;
 import com.bharadwaj.demoone.service.MedicalPlanService;
 import jakarta.validation.Valid;
@@ -21,11 +22,10 @@ public class MedicalPlanController {
     private MedicalPlanService medicalPlanService;
 
     @PostMapping
-    public ResponseEntity<Plan> saveMedicalPlan(@Valid @RequestBody Plan p){
-        log.info("Plan passed to POST : ", p );
+    public ResponseEntity<PlanResponse> saveMedicalPlan(@Valid @RequestBody Plan p){
         boolean result = medicalPlanService.savePlan(p);
-        if(result){
-            ResponseEntity.ok("Medical Plan added to the DB Successfully !! ");
+        if(result && p.getObjectId() != null){
+            return ResponseEntity.ok(new PlanResponse(p.getObjectId()));
         }else{
             ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
