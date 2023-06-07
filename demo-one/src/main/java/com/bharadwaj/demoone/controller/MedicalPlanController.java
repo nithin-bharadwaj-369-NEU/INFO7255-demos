@@ -25,7 +25,7 @@ public class MedicalPlanController {
     public ResponseEntity<PlanResponse> saveMedicalPlan(@Valid @RequestBody Plan p){
         boolean result = medicalPlanService.savePlan(p);
         if(result && p.getObjectId() != null){
-            return ResponseEntity.ok(new PlanResponse(p.getObjectId()));
+            return ResponseEntity.status(201).body(new PlanResponse(p.getObjectId()));
         }else{
             ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
