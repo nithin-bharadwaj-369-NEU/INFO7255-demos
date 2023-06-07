@@ -50,7 +50,7 @@ public class MedicalPlanController {
                                                @RequestHeader(value = "If-None-Match", required = false) String ifNoneMatch){
         Optional<Plan> plan = medicalPlanService.getMedicalPlanById(objectId);
         if(plan.isPresent()){
-            String currentETag = "\"" + EtagUtil.generateEtag(plan) + "\"";
+            String currentETag = "\"" + EtagUtil.generateEtag(plan.get()) + "\"";
             if(ifNoneMatch != null && currentETag.equals(ifNoneMatch)){
                 log.info("*** Current Etag : " + currentETag.toString());
                 log.info("*** If None Match : " + ifNoneMatch.toString());
