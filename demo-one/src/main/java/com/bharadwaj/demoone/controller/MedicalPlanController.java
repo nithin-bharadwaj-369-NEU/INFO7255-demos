@@ -52,8 +52,6 @@ public class MedicalPlanController {
         if(plan.isPresent()){
             String currentETag = "\"" + EtagUtil.generateEtag(plan.get()) + "\"";
             if(ifNoneMatch != null && currentETag.equals(ifNoneMatch)){
-                log.info("*** Current Etag : " + currentETag.toString());
-                log.info("*** If None Match : " + ifNoneMatch.toString());
                 return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
             }
             HttpHeaders responseHeaders = new HttpHeaders();
