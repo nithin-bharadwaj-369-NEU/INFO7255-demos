@@ -14,6 +14,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Objects;
 
 @Data
 @AllArgsConstructor
@@ -39,4 +40,9 @@ public class Plan implements Serializable {
     @DateTimeFormat(pattern = "MM-dd-yyyy") // update this if your date format is different
     @PastOrPresent(message = "Creation date must be in the past or present")
     public Date creationDate;
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(objectId /*other fields of Plan*/);
+    }
 }

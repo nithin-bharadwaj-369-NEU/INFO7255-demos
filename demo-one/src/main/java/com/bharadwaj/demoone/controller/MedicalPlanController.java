@@ -3,9 +3,11 @@ package com.bharadwaj.demoone.controller;
 import com.bharadwaj.demoone.dto.PlanResponse;
 import com.bharadwaj.demoone.model.Plan;
 import com.bharadwaj.demoone.service.MedicalPlanService;
+import com.bharadwaj.demoone.util.EtagUtil;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +27,10 @@ public class MedicalPlanController {
     public ResponseEntity<PlanResponse> saveMedicalPlan(@Valid @RequestBody Plan p){
         boolean result = medicalPlanService.savePlan(p);
         if(result && p.getObjectId() != null){
-            return ResponseEntity.status(201).body(new PlanResponse(p.getObjectId()));
+            HttpHeaders responseHeaders = new HttpHeaders();
+            String eTag = "\"" + EtagUtil.generateEtag(p) + "\"";
+            responseHeaders.setETag(eTag);
+            return ResponseEntity.status(201).headers(responseHeaders).body(new PlanResponse(p.getObjectId()));
         }else{
             ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
@@ -41,10 +46,20 @@ public class MedicalPlanController {
     }
 
     @GetMapping("/{objectId}")
-    public ResponseEntity<Plan> getMedicalPlan(@PathVariable String objectId){
+    public ResponseEntity<Plan> getMedicalPlan(@PathVariable String objectId,
+                                               @RequestHeader(value = "If-None-Match", required = false) String ifNoneMatch){
         Optional<Plan> plan = medicalPlanService.getMedicalPlanById(objectId);
         if(plan.isPresent()){
-            return ResponseEntity.ok(plan.get());
+            String currentETag = "\"" + EtagUtil.generateEtag(plan) + "\"";
+            if(ifNoneMatch != null && currentETag.equals(ifNoneMatch)){
+                log.info("*** Current Etag : " + currentETag.toString());
+                log.info("*** If None Match : " + ifNoneMatch.toString());
+                return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
+            }
+            HttpHeaders responseHeaders = new HttpHeaders();
+            responseHeaders.setETag(currentETag);
+
+            return ResponseEntity.ok().headers(responseHeaders).body(plan.get());
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
