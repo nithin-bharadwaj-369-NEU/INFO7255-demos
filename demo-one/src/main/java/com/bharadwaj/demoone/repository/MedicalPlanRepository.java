@@ -1,32 +1,17 @@
 package com.bharadwaj.demoone.repository;
 
 import com.bharadwaj.demoone.model.Plan;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
+import javax.swing.text.html.Option;
 import java.util.List;
+import java.util.Optional;
 
-@Slf4j
-@Repository
-public class MedicalPlanRepository {
-    private List<Plan> list = new ArrayList<Plan>();
+public interface MedicalPlanRepository {
+    boolean savePlan(Plan p);
 
-    public Plan save(Plan p) {
-        Plan medicalPlan = new Plan();
-        log.info("Plan sent to save : " + p.toString());
-        // update the keys to the medical Plan
-        list.add(medicalPlan);
-        return medicalPlan;
-    }
+    List<Plan> fetchAllPlans();
 
-    public int delete(String id) {
-        list.removeIf(x -> x.getObjectId() == (id));
-        return 1;
-    }
+    Optional<Plan> getPlanById(String objectId);
 
-//    public List<Plan> getAllPlans(){
-//
-//    }
-
+    Optional<Boolean> deletePlan(String objectId);
 }

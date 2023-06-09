@@ -10,11 +10,11 @@ import java.io.Serializable;
 
 @Data
 public class PlanserviceCostShares implements Serializable {
-    @Min(value = 1, message = "Deductible must be greater than 0")
+    @Min(value = 0, message = "Deductible must be greater than 0")
     @Max(value = 999999999, message = "Deductible must be less than 999999999")
     public int deductible;
 
-    @Min(value = 1, message = "Co-pay must be greater than 0")
+    @Min(value = 0, message = "Co-pay must be greater than 0")
     @Max(value = 999999999, message = "Co-pay must be less than 999999999")
     public int copay;
     @NotBlank(message = "Organization is mandatory")
