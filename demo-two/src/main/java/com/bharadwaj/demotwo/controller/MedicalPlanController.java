@@ -68,11 +68,15 @@ public class MedicalPlanController {
     }
 
     @PutMapping("/{objectId}")
-    public ResponseEntity<Message> updateMedicalPlan(@PathVariable String objectId, @Valid @RequestBody Plan p){
+    public ResponseEntity<Message> updateMedicalPlan(@PathVariable String objectId, @Valid @RequestBody Plan p,
+                                                     @RequestHeader(value = "If-None-Match", required = false) String ifNoneMatch){
         Optional<Boolean> result = medicalPlanService.updatePlan(objectId, p);
         if(result.isPresent() && result.get()){
-            HttpHeaders responseHeaders = new HttpHeaders();
             String eTag = "\"" + EtagUtil.generateEtag(p) + "\"";
+            if(ifNoneMatch != null && eTag.equals(ifNoneMatch)){
+                return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
+            }
+            HttpHeaders responseHeaders = new HttpHeaders();
             responseHeaders.setETag(eTag);
             return ResponseEntity.status(200).headers(responseHeaders).body(new Message("Updated Successfully"));
         }else{
@@ -81,13 +85,14 @@ public class MedicalPlanController {
     }
 
     @PatchMapping("/{objectId}")
-    public ResponseEntity<Plan> patchMedicalPlan(@PathVariable String objectId, @RequestBody ObjectNode updates) throws IOException {
+    public ResponseEntity<Plan> patchMedicalPlan(@PathVariable String objectId, @RequestBody ObjectNode updates,
+                                                 @RequestHeader(value = "If-None-Match", required = false) String ifNoneMatch) throws IOException {
         Optional<Plan> plan = medicalPlanService.patchMedicalPlan(objectId, updates);
         if(plan.isPresent()){
             String currentETag = "\"" + EtagUtil.generateEtag(plan.get()) + "\"";
-//            if(ifNoneMatch != null && currentETag.equals(ifNoneMatch)){
-//                return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
-//            }
+            if(ifNoneMatch != null && currentETag.equals(ifNoneMatch)){
+                return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
+            }
             HttpHeaders responseHeaders = new HttpHeaders();
             responseHeaders.setETag(currentETag);
 
