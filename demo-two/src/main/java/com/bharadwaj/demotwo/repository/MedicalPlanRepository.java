@@ -13,4 +13,6 @@ public interface MedicalPlanRepository {
     Optional<Plan> getPlanById(String objectId);
 
     Optional<Boolean> deletePlan(String objectId);
+
+    Optional<Boolean> updatePlanById(String objectId, Plan p);
 }

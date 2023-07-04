@@ -38,7 +38,7 @@ public class MedicalPlanServiceImpl implements MedicalPlanService{
     }
 
     @Override
-    public boolean updatePlan(String objectId, Plan p) {
-        return false;
+    public Optional<Boolean> updatePlan(String objectId, Plan p) {
+        return medicalPlanRepository.updatePlanById(objectId, p);
     }
 }

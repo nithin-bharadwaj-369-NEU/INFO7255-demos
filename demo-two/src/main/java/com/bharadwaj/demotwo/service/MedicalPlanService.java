@@ -14,5 +14,5 @@ public interface MedicalPlanService {
 
     Optional<Boolean> deletePlan(String objectId);
 
-    boolean updatePlan(String objectId, Plan p);
+    Optional<Boolean> updatePlan(String objectId, Plan p);
 }

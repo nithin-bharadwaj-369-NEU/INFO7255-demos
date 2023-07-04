@@ -59,4 +59,19 @@ public class MedicalPlanRepositoryImpl implements MedicalPlanRepository{
             return Optional.of(false);
         }
     }
+
+    @Override
+    public Optional<Boolean> updatePlanById(String objectId, Plan p) {
+        try{
+            if(redisTemplate.opsForHash().hasKey(KEY, objectId.toString())){
+                redisTemplate.opsForHash().put(KEY, p.getObjectId().toString(), p);
+                return Optional.of(true);
+            }else {
+                return Optional.empty();
+            }
+        }catch(Exception e){
+            log.error("Error deleting plan", e);
+            return Optional.of(false);
+        }
+    }
 }

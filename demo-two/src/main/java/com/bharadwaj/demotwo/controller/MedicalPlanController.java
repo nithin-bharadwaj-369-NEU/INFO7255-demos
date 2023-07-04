@@ -64,10 +64,10 @@ public class MedicalPlanController {
         }
     }
 
-    @PutMapping
+    @PutMapping("/{objectId}")
     public ResponseEntity<Message> updateMedicalPlan(@PathVariable String objectId, @Valid @RequestBody Plan p){
-        boolean result = medicalPlanService.updatePlan(objectId, p);
-        if(result && p.getObjectId() != null){
+        Optional<Boolean> result = medicalPlanService.updatePlan(objectId, p);
+        if(result.isPresent() && result.get()){
             HttpHeaders responseHeaders = new HttpHeaders();
             String eTag = "\"" + EtagUtil.generateEtag(p) + "\"";
             responseHeaders.setETag(eTag);
