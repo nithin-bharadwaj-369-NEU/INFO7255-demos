@@ -1,11 +1,17 @@
 package com.bharadwaj.demotwo.repository;
 
 import com.bharadwaj.demotwo.model.Plan;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,9 +20,11 @@ import java.util.Optional;
 public class MedicalPlanRepositoryImpl implements MedicalPlanRepository{
 
     private final RedisTemplate redisTemplate;
+    private final ObjectMapper objectMapper;
     @Autowired
-    public MedicalPlanRepositoryImpl(RedisTemplate redisTemplate) {
+    public MedicalPlanRepositoryImpl(RedisTemplate redisTemplate, ObjectMapper objectMapper) {
         this.redisTemplate = redisTemplate;
+        this.objectMapper = objectMapper;
     }
 
     private static final String KEY="MEDICAL_PLAN";
@@ -74,4 +82,19 @@ public class MedicalPlanRepositoryImpl implements MedicalPlanRepository{
             return Optional.of(false);
         }
     }
+
+    @Override
+    public Optional<Plan> patchPlan(String objectId, ObjectNode updates) throws IOException {
+        Plan medicalPlan = (Plan) redisTemplate.opsForHash().get(KEY, objectId.toString());
+        if (medicalPlan == null) {
+            return Optional.empty();
+        }
+
+        JsonNode existingPlanNode = this.objectMapper.valueToTree(medicalPlan);
+        JsonNode patched = this.objectMapper.readerForUpdating(existingPlanNode).readValue(updates);
+        Plan patchedPlan = this.objectMapper.treeToValue(patched, Plan.class);
+        redisTemplate.opsForHash().put(KEY, objectId, patchedPlan);
+        return Optional.ofNullable(patchedPlan);
+    }
+
 }

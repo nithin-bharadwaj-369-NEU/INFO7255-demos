@@ -5,6 +5,8 @@ import com.bharadwaj.demotwo.dto.PlanResponse;
 import com.bharadwaj.demotwo.model.Plan;
 import com.bharadwaj.demotwo.service.MedicalPlanService;
 import com.bharadwaj.demotwo.util.EtagUtil;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -77,9 +80,21 @@ public class MedicalPlanController {
         }
     }
 
-    @PatchMapping
-    public ResponseEntity<Plan> patchMedicalPlan(){
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    @PatchMapping("/{objectId}")
+    public ResponseEntity<Plan> patchMedicalPlan(@PathVariable String objectId, @RequestBody ObjectNode updates) throws IOException {
+        Optional<Plan> plan = medicalPlanService.patchMedicalPlan(objectId, updates);
+        if(plan.isPresent()){
+            String currentETag = "\"" + EtagUtil.generateEtag(plan.get()) + "\"";
+//            if(ifNoneMatch != null && currentETag.equals(ifNoneMatch)){
+//                return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
+//            }
+            HttpHeaders responseHeaders = new HttpHeaders();
+            responseHeaders.setETag(currentETag);
+
+            return ResponseEntity.ok().headers(responseHeaders).body(plan.get());
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
     @DeleteMapping("/{objectId}")
