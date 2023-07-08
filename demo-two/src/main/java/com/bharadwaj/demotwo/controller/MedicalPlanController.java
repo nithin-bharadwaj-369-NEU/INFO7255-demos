@@ -2,13 +2,16 @@ package com.bharadwaj.demotwo.controller;
 
 import com.bharadwaj.demotwo.dto.Message;
 import com.bharadwaj.demotwo.dto.PlanResponse;
+import com.bharadwaj.demotwo.exception.NoTokenException;
 import com.bharadwaj.demotwo.model.Plan;
 import com.bharadwaj.demotwo.service.MedicalPlanService;
 import com.bharadwaj.demotwo.util.EtagUtil;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -69,13 +72,20 @@ public class MedicalPlanController {
 
     @PutMapping("/{objectId}")
     public ResponseEntity<Message> updateMedicalPlan(@PathVariable String objectId, @Valid @RequestBody Plan p,
-                                                     @RequestHeader(value = "If-None-Match", required = false) String ifNoneMatch){
+                                                     @RequestHeader(value = "If-Match", required = false) String ifMatch){
+
+        Optional<Plan> plan = medicalPlanService.getMedicalPlanById(objectId);
+        String originalETag = "\"" + EtagUtil.generateEtag(plan.get()) + "\"";
+        if (ifMatch == null || ifMatch == "") {
+            return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).body(new Message("eTag not Provided in request !!!"));
+        }
+        else if (!ifMatch.equals(originalETag)){
+            return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).body(new Message("Plan has been updated by another User !!!"));
+        }
+
         Optional<Boolean> result = medicalPlanService.updatePlan(objectId, p);
         if(result.isPresent() && result.get()){
             String eTag = "\"" + EtagUtil.generateEtag(p) + "\"";
-            if(ifNoneMatch != null && eTag.equals(ifNoneMatch)){
-                return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
-            }
             HttpHeaders responseHeaders = new HttpHeaders();
             responseHeaders.setETag(eTag);
             return ResponseEntity.status(200).headers(responseHeaders).body(new Message("Updated Successfully"));
@@ -85,14 +95,21 @@ public class MedicalPlanController {
     }
 
     @PatchMapping("/{objectId}")
-    public ResponseEntity<Plan> patchMedicalPlan(@PathVariable String objectId, @RequestBody ObjectNode updates,
-                                                 @RequestHeader(value = "If-None-Match", required = false) String ifNoneMatch) throws IOException {
+    public ResponseEntity<Object> patchMedicalPlan(@PathVariable String objectId, @RequestBody ObjectNode updates,
+                                                 @RequestHeader(value = "If-Match", required = false) String ifMatch) throws IOException {
+        Optional<Plan> oldPlan = medicalPlanService.getMedicalPlanById(objectId);
+        String originalETag = "\"" + EtagUtil.generateEtag(oldPlan.get()) + "\"";
+        if (ifMatch == null || ifMatch == "") {
+            return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).body(new Message("eTag not Provided in request !!!"));
+        }
+        else if (!ifMatch.equals(originalETag)){
+            return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).body(new Message("Plan has been updated by another User !!!"));
+        }
+
         Optional<Plan> plan = medicalPlanService.patchMedicalPlan(objectId, updates);
         if(plan.isPresent()){
             String currentETag = "\"" + EtagUtil.generateEtag(plan.get()) + "\"";
-            if(ifNoneMatch != null && currentETag.equals(ifNoneMatch)){
-                return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
-            }
+
             HttpHeaders responseHeaders = new HttpHeaders();
             responseHeaders.setETag(currentETag);
 
@@ -103,8 +120,18 @@ public class MedicalPlanController {
     }
 
     @DeleteMapping("/{objectId}")
-    public ResponseEntity<String> deleteMedicalPlan(@PathVariable String objectId){
+    public ResponseEntity<Object> deleteMedicalPlan(@PathVariable String objectId, @RequestHeader(value = "If-Match", required = false) String ifMatch){
         log.info("Object passed to delete Medical Plan : " + objectId);
+        
+        Optional<Plan> oldPlan = medicalPlanService.getMedicalPlanById(objectId);
+        String originalETag = "\"" + EtagUtil.generateEtag(oldPlan.get()) + "\"";
+        if (ifMatch == null || ifMatch == "") {
+            return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).body(new Message("eTag not Provided in request !!!"));
+        }
+        else if (!ifMatch.equals(originalETag)){
+            return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).body(new Message("Plan has been updated by another User !!!"));
+        }
+
         Optional<Boolean> result = medicalPlanService.deletePlan(objectId);
         if(result.isPresent()){
             if(result.get()){
