@@ -122,7 +122,7 @@ public class MedicalPlanController {
     @DeleteMapping("/{objectId}")
     public ResponseEntity<Object> deleteMedicalPlan(@PathVariable String objectId, @RequestHeader(value = "If-Match", required = false) String ifMatch){
         log.info("Object passed to delete Medical Plan : " + objectId);
-        
+
         Optional<Plan> oldPlan = medicalPlanService.getMedicalPlanById(objectId);
         String originalETag = "\"" + EtagUtil.generateEtag(oldPlan.get()) + "\"";
         if (ifMatch == null || ifMatch == "") {
