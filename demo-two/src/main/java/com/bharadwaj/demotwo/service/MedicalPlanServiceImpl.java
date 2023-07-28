@@ -5,7 +5,9 @@ import com.bharadwaj.demotwo.repository.MedicalPlanRepository;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -19,10 +21,23 @@ public class MedicalPlanServiceImpl implements MedicalPlanService{
     @Autowired
     private MedicalPlanRepository medicalPlanRepository;
 
+    @Autowired
+    private AmqpTemplate myRabbitTemplate;
+
+    @Value("${rabbitmq.exchange}")
+    private String exchange;
+
+    @Value("${rabbitmq.routingkey}")
+    private String routingkey;
+
 
     @Override
     public boolean savePlan(Plan p) {
-        return medicalPlanRepository.savePlan(p);
+        boolean result = medicalPlanRepository.savePlan(p);
+        if (result) {
+            myRabbitTemplate.convertAndSend(exchange, routingkey, "Plan saved: " + p.toString());
+        }
+        return result;
     }
 
     @Override
