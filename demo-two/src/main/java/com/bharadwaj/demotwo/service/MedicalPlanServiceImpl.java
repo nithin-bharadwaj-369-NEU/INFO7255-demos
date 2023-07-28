@@ -52,7 +52,11 @@ public class MedicalPlanServiceImpl implements MedicalPlanService{
 
     @Override
     public Optional<Boolean> deletePlan(String objectId) {
-        return medicalPlanRepository.deletePlan(objectId);
+        Optional<Boolean> result = medicalPlanRepository.deletePlan(objectId);
+        if (result.isPresent() && result.get()) {
+            myRabbitTemplate.convertAndSend(exchange, routingkey, "Deleted plan with id: " + objectId);
+        }
+        return result;
     }
 
     @Override
