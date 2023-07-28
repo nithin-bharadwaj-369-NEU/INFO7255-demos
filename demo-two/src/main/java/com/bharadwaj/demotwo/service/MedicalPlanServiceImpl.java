@@ -57,11 +57,19 @@ public class MedicalPlanServiceImpl implements MedicalPlanService{
 
     @Override
     public Optional<Boolean> updatePlan(String objectId, Plan p) {
-        return medicalPlanRepository.updatePlanById(objectId, p);
+        Optional<Boolean> result = medicalPlanRepository.updatePlanById(objectId, p);
+        if (result.isPresent() && result.get()) {
+            myRabbitTemplate.convertAndSend(exchange, routingkey, "Updated plan: " + p.toString());
+        }
+        return result;
     }
 
     @Override
     public Optional<Plan> patchMedicalPlan(String objectId, ObjectNode updates) throws IOException {
-        return medicalPlanRepository.patchPlan(objectId, updates);
+        Optional<Plan> patchedPlan = medicalPlanRepository.patchPlan(objectId, updates);
+        if (patchedPlan.isPresent()) {
+            myRabbitTemplate.convertAndSend(exchange, routingkey, "Patched plan with id: " + objectId);
+        }
+        return patchedPlan;
     }
 }
