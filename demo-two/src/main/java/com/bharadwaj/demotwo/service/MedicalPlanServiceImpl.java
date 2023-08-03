@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -35,7 +36,10 @@ public class MedicalPlanServiceImpl implements MedicalPlanService{
     public boolean savePlan(Plan p) {
         boolean result = medicalPlanRepository.savePlan(p);
         if (result) {
-            myRabbitTemplate.convertAndSend(exchange, routingkey, "Plan saved: " + p.toString());
+            myRabbitTemplate.convertAndSend(exchange, routingkey,
+                    MessageBuilder.withBody(("Plan saved: " + p.toString()).getBytes())
+                    .setHeader("action", "CREATE")
+                    .build());
         }
         return result;
     }
@@ -54,7 +58,9 @@ public class MedicalPlanServiceImpl implements MedicalPlanService{
     public Optional<Boolean> deletePlan(String objectId) {
         Optional<Boolean> result = medicalPlanRepository.deletePlan(objectId);
         if (result.isPresent() && result.get()) {
-            myRabbitTemplate.convertAndSend(exchange, routingkey, "Deleted plan with id: " + objectId);
+            myRabbitTemplate.convertAndSend(exchange, routingkey, MessageBuilder.withBody(("Deleted plan with id: " + objectId).getBytes())
+                    .setHeader("action", "DELETE")
+                    .build());
         }
         return result;
     }
@@ -63,7 +69,9 @@ public class MedicalPlanServiceImpl implements MedicalPlanService{
     public Optional<Boolean> updatePlan(String objectId, Plan p) {
         Optional<Boolean> result = medicalPlanRepository.updatePlanById(objectId, p);
         if (result.isPresent() && result.get()) {
-            myRabbitTemplate.convertAndSend(exchange, routingkey, "Updated plan: " + p.toString());
+            myRabbitTemplate.convertAndSend(exchange, routingkey, MessageBuilder.withBody(("Updated plan: " + p.toString()).getBytes())
+                    .setHeader("action", "UPDATE")
+                    .build());
         }
         return result;
     }
@@ -72,7 +80,9 @@ public class MedicalPlanServiceImpl implements MedicalPlanService{
     public Optional<Plan> patchMedicalPlan(String objectId, ObjectNode updates) throws IOException {
         Optional<Plan> patchedPlan = medicalPlanRepository.patchPlan(objectId, updates);
         if (patchedPlan.isPresent()) {
-            myRabbitTemplate.convertAndSend(exchange, routingkey, "Patched plan with id: " + objectId);
+            myRabbitTemplate.convertAndSend(exchange, routingkey, MessageBuilder.withBody(("Updated plan: " + objectId.toString()).getBytes())
+                    .setHeader("action", "UPDATE")
+                    .build());
         }
         return patchedPlan;
     }
