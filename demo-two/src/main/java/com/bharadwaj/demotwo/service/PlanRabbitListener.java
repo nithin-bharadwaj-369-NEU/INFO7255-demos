@@ -26,14 +26,8 @@ public class PlanRabbitListener {
     public void listen(Message message) throws IOException {
         String action = message.getMessageProperties().getHeaders().get("action").toString();
         Object planInfo = null;
-        System.out.println("Action : " + action);
-//        if (action.equals("DELETE")){
-//            planInfo = objectMapper.readTree(new String(message.getBody())).get("objectId").asText();
-//        }else{
-            String messageData = new String(message.getBody());
-            System.out.println("message Body *** : " + messageData);
-            planInfo = objectMapper.readValue(messageData, Plan.class);
-//        }
+        String messageData = new String(message.getBody());
+        planInfo = objectMapper.readValue(messageData, Plan.class);
 
         switch (action) {
             case "CREATE":

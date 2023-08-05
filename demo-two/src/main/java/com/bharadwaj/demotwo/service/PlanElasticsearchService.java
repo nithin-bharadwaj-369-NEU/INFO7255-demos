@@ -6,6 +6,8 @@ import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.support.WriteRequest;
+import org.elasticsearch.action.update.UpdateRequest;
+import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.indices.CreateIndexRequest;
@@ -119,7 +121,7 @@ public class PlanElasticsearchService {
 
         while (iterator.hasNext()){
             String key = iterator.next();
-            String redisKey = jsonObject.get("objectType") + ":" + parentId;
+            String redisKey = parentId;
             Object value = jsonObject.get(key);
 
             if (value instanceof JSONObject) {

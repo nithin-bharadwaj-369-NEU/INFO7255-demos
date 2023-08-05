@@ -83,13 +83,6 @@ public class MedicalPlanServiceImpl implements MedicalPlanService{
         Optional<Boolean> result = medicalPlanRepository.updatePlanById(objectId, p);
         if (result.isPresent() && result.get()) {
             try {
-                Optional<Plan> planInfo = medicalPlanRepository.getPlanById(objectId);
-                if (planInfo.isPresent()) {
-                    String planJson = objectMapper.writeValueAsString(planInfo.get());
-                    myRabbitTemplate.convertAndSend(exchange, routingkey, MessageBuilder.withBody(planJson.getBytes())
-                            .setHeader("action", "DELETE")
-                            .build());
-                }
                 String planJson = objectMapper.writeValueAsString(p);
                 myRabbitTemplate.convertAndSend(exchange, routingkey,
                         MessageBuilder.withBody((planJson).getBytes())
