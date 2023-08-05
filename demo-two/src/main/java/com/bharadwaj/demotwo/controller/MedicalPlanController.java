@@ -6,6 +6,7 @@ import com.bharadwaj.demotwo.exception.NoTokenException;
 import com.bharadwaj.demotwo.model.Plan;
 import com.bharadwaj.demotwo.service.MedicalPlanService;
 import com.bharadwaj.demotwo.util.EtagUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.servlet.http.HttpServletRequest;
@@ -120,7 +121,7 @@ public class MedicalPlanController {
     }
 
     @DeleteMapping("/{objectId}")
-    public ResponseEntity<Object> deleteMedicalPlan(@PathVariable String objectId, @RequestHeader(value = "If-Match", required = false) String ifMatch){
+    public ResponseEntity<Object> deleteMedicalPlan(@PathVariable String objectId, @RequestHeader(value = "If-Match", required = false) String ifMatch) throws JsonProcessingException {
         log.info("Object passed to delete Medical Plan : " + objectId);
 
         Optional<Plan> oldPlan = medicalPlanService.getMedicalPlanById(objectId);
