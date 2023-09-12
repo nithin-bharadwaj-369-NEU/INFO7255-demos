@@ -1,6 +1,6 @@
 # MediPlan Manager
 
-MediPlan Manager is a state-of-the-art medical plan management application, intricately designed to revolutionize system performance, data flow, and security measures within the healthcare sector. Leveraging the power of Spring Boot 3, Redis Cache, RabbitMQ, and OAuth 2.0 authentication via Keycloak, this application assures accelerated responsiveness and fortified security.
+MediPlan Manager is a medical plan management application intricately designed to enhance system performance, transparency in data flow, and uphold security measures within the healthcare sector. By leveraging the power of Spring Boot 3, Redis Cache, RabbitMQ, and OAuth 2.0 authentication via Keycloak, this application provides fortified security with the application able to scale in a distributed environment. A notable feature of this application is its adherence to HIPAA compliance standards, prioritizing the confidentiality and security of health information.
 
 ## Features
 
@@ -8,6 +8,12 @@ MediPlan Manager is a state-of-the-art medical plan management application, intr
 - **Secured Authentication**: Integrated OAuth 2.0 authentication through Keycloak, further safeguarded with JWT Auth Tokens.
 - **Advanced Search Capabilities**: Implemented ELK Stack to refine full-text search capabilities, enhancing data accessibility and usability.
 - **Robust Data Flow**: Facilitated seamless data flow and transaction management with the help of RabbitMQ.
+- **HIPAA Compliance**: Designed considering HIPAA standards, to ensure the utmost security and confidentiality of medical data.
+
+## Architecture
+
+![MediPlan Manager Architecture](./images/architecture-diagram.png)
+
 
 ## Technologies Used
 
@@ -18,10 +24,12 @@ MediPlan Manager is a state-of-the-art medical plan management application, intr
 - ELK Stack
 - JWT Authentication
 
+
+
 ## Getting Started
 
 Before you begin, ensure you have met the following requirements:
-- You have installed Java 11 or later.
+- You have installed Java 17 or later.
 - You have a working installation of Maven.
 - You have Redis and RabbitMQ set up in your environment.
 - You have an instance of Keycloak running for OAuth 2.0 authentication.
@@ -31,6 +39,7 @@ Before you begin, ensure you have met the following requirements:
 ```sh
 git clone https://github.com/yourusername/mediplan-manager.git
 cd mediplan-manager
+cd demo-two
 ```
 
 ### Step 2: Configure Keycloak
@@ -64,4 +73,3 @@ If you encounter any issues or have suggestions, please open an issue on GitHub.
 
 ---
 
-Remember to replace placeholder texts such as `yourusername` and include actual paths, URLs or other necessary details. You can also expand on each section with more details as necessary for your project.
